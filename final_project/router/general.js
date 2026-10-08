@@ -1,3 +1,4 @@
+const axios = require('axios');
 const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
@@ -69,5 +70,45 @@ public_users.get('/review/:isbn', function (req, res) {
     }
     return res.status(404).json({ message: "Book not found" });
 });
+const BASE_URL = "http://localhost:5000";
 
+// Task 10: Get the list of all books (async/await with Axios)
+public_users.get('/async/books', async function (req, res) {
+    try {
+        const response = await axios.get(`${BASE_URL}/`);
+        return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching book list" });
+    }
+});
+
+// Task 11: Get book details by ISBN (async/await with Axios)
+public_users.get('/async/isbn/:isbn', async function (req, res) {
+    try {
+        const response = await axios.get(`${BASE_URL}/isbn/${req.params.isbn}`);
+        return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (error) {
+        return res.status(404).json({ message: "Book not found" });
+    }
+});
+
+// Task 12: Get book details by author (async/await with Axios)
+public_users.get('/async/author/:author', async function (req, res) {
+    try {
+        const response = await axios.get(`${BASE_URL}/author/${encodeURIComponent(req.params.author)}`);
+        return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (error) {
+        return res.status(404).json({ message: "No books found for this author" });
+    }
+});
+
+// Task 13: Get book details by title (async/await with Axios)
+public_users.get('/async/title/:title', async function (req, res) {
+    try {
+        const response = await axios.get(`${BASE_URL}/title/${encodeURIComponent(req.params.title)}`);
+        return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (error) {
+        return res.status(404).json({ message: "No books found with this title" });
+    }
+});
 module.exports.general = public_users;
